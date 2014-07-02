@@ -15,3 +15,4 @@ Programa para administrar inventarios.
   * Generar reporte en HTML (PDF ¿?)
   * Implementar persistencia de datos
     * cpickle 
+  * Interfaz grafica Tk.
