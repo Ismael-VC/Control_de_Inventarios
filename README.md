@@ -16,3 +16,4 @@ Programa para administrar inventarios.
   * Implementar persistencia de datos
     * cpickle 
   * Interfaz grafica Tk.
+  * Hacer pruebas en una Mac.
