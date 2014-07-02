@@ -2,11 +2,7 @@
 
 
 '''
-Por hacer:
-
-  · Checar que no se retire mas de lo que hay disponible en inventario.
-  · Usar decimal.Decimal en vez de floats.
-  · Implementar métodos: PEPS, UEPS y PPP.
+Programa para administrar inventarios.
 '''
 
 
@@ -20,7 +16,7 @@ __author__ = 'Ismael Venegas Castelló'
 __email__ = 'ismael.vc1337@gmail.com'
 __copyright__ = 'Copyright 2014, {0}'.format(__author__)
 __date__ = '01/07/2014'
-__licence__ = 'GPLv2'
+__licence__ = 'GPL v2'
 __version__ = '0.1.0'
 __status__ = 'Inestable'
 
