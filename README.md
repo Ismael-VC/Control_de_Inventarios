@@ -2,6 +2,8 @@
 
 Programa para administrar inventarios.
 
+![Alt text](control_inventario.jpg)
+
 * Nota: De momento solo esta implementado el metodo de Promedio Simple.
 
 ### Por hacer:
