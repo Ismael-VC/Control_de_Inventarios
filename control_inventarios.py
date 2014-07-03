@@ -149,8 +149,6 @@ def main():
         try:
             limpia()
             datos = pedir_datos(tabla)
-
-
             opcion = datos[0]
             ingresar_datos(datos, tabla, indice)
 
@@ -158,10 +156,10 @@ def main():
                 indice += 1
             pausa()
 
-
         except ValueError:
             print('\n\n[!] Intente de nuevo.')
             pausa()
+
 
 if __name__ == '__main__':
     main()
