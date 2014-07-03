@@ -22,153 +22,151 @@ __status__ = 'Inestable'
 
 
 def limpia():
-  ''' Limpia la pantalla.'''
-  plataforma = platform
+    ''' Limpia la pantalla.'''
+    plataforma = platform
 
-  if plataforma.startswith('linux'):
-    call('clear')
+    if plataforma.startswith('linux'):
+        call('clear')
 
-  elif plataforma.startswith('win'):
-    call('cls', shell=True)
+    elif plataforma.startswith('win'):
+        call('cls', shell=True)
 
 
 def pausa():
-  '''Permite realizar pausas dentro de un bucle.'''
-  input("\n\nPresione enter para continuar. ")
+    '''Permite realizar pausas dentro de un bucle.'''
+    input("\n\nPresione enter para continuar. ")
 
 
 def reiniciar():
-  pausa()
-  limpia()
-  main()
+    pausa()
+    limpia()
+    main()
 
 
 def generar_tabla():
-  columnas = ['ENTRADA',
-              'SALIDA',
-              'EXISTENCIA',
-              'UNITARIO',
-              'MEDIO',
-              'DEBE',
-              'HABER',
-              'SALDO']
+    columnas = ['ENTRADA',
+                'SALIDA',
+                'EXISTENCIA',
+                'UNITARIO',
+                'MEDIO',
+                'DEBE',
+                'HABER',
+                'SALDO']
 
-  tabla = DataFrame(columns=columnas)
-  return tabla
+    tabla = DataFrame(columns=columnas)
+    return tabla
 
 
 def pedir_datos(tabla, cantidad=0.0, unitario=0.0):
-  opciones_permitidas = ['c', 'v', 'm', 's']
-  opcion = input('CONTROL DE INVENTARIO\n\n'
-                 'Seleccione una opción:\n'
-                 '  c: Compras\n'
-                 '  v: Ventas\n'
-                 '  m: Movimientos\n'
-                 '  s: Salir\n\n'
-                 '=> ').lower()
+    opciones_permitidas = ['c', 'v', 'm', 's']
+    opcion = input('CONTROL DE INVENTARIO\n\n'
+                   'Seleccione una opción:\n'
+                   '  c: Compras\n'
+                   '  v: Ventas\n'
+                   '  m: Movimientos\n'
+                   '  s: Salir\n\n'
+                   '=> ').lower()
 
-  if opcion in opciones_permitidas:
-    if opcion == 'c' or (opcion == 'v' and not tabla.empty):
-        cantidad = float(input('\nCantidad de unidades: '))
+    if opcion in opciones_permitidas:
+        if opcion == 'c':
+            cantidad = float(input('\nCantidad de unidades: '))
+            unitario = float(input('Precio unitario: '.rjust(22)))
 
-    if opcion == 'v' and not tabla.empty:
-      print()
+        if opcion == 'v' and not tabla.empty:
+            cantidad = float(input('\nCantidad de unidades: '))
 
-    if opcion == 'c':
-      unitario = float(input('Precio unitario: '.rjust(22)))
-      print()
+        if opcion == 's':
+            exit(0)
 
-    elif opcion == 's':
-      exit(0)
+        print()
+        return opcion, cantidad, unitario
 
-    return opcion, cantidad, unitario
-
-  else:
-    print('\n\n[!] Opción invalida: "{0}"'.format(opcion))
-    reiniciar()
+    else:
+        print('\n\n[!] Opción invalida: "{0}"'.format(opcion))
+        reiniciar()
 
 
 def ingresar_datos(datos, tabla, indice):
-  '''Ingresa una nueva fila de datos a la tabla del inventario.'''
-  opcion, cantidad, unitario = datos
+    '''Ingresa una nueva fila de datos a la tabla del inventario.'''
+    opcion, cantidad, unitario = datos
 
-  if opcion == 'c' and indice != 0:
-    entrada    = cantidad
-    salida     = tabla['SALIDA'][indice-1]
-    existencia = tabla['EXISTENCIA'][indice-1] + cantidad
-    medio      = 0.0
-    debe       = cantidad * unitario
-    haber      = tabla['HABER'][indice-1]
-    saldo      = tabla['SALDO'][indice-1] + debe
+    if opcion == 'c' and indice != 0:
+        entrada = cantidad
+        salida = tabla['SALIDA'][indice-1]
+        existencia = tabla['EXISTENCIA'][indice-1] + cantidad
+        medio = 0.0
+        debe = cantidad * unitario
+        haber = tabla['HABER'][indice-1]
+        saldo = tabla['SALDO'][indice-1] + debe
 
-  elif opcion == 'c':
-    entrada    = cantidad
-    salida     = 0.0
-    existencia = entrada
-    medio      = 0.0
-    debe       = cantidad * unitario
-    haber      = 0.0
-    saldo      = debe
+    elif opcion == 'c':
+        entrada = cantidad
+        salida = 0.0
+        existencia = entrada
+        medio = 0.0
+        debe = cantidad * unitario
+        haber = 0.0
+        saldo = debe
 
-  elif opcion == 'v' and indice != 0:
-    entrada    = 0.0
-    salida     = cantidad
-    existencia = tabla['EXISTENCIA'][indice-1] - cantidad
-    debe       = 0.0
-    medio      = tabla['DEBE'][indice-1] / tabla['EXISTENCIA'][indice-1]
-    haber      = cantidad * medio
-    saldo      = tabla['SALDO'][indice-1] - haber
+    elif opcion == 'v' and indice != 0:
+        entrada = 0.0
+        salida = cantidad
+        existencia = tabla['EXISTENCIA'][indice-1] - cantidad
+        debe = 0.0
+        medio = tabla['DEBE'][indice-1] / tabla['EXISTENCIA'][indice-1]
+        haber = cantidad * medio
+        saldo = tabla['SALDO'][indice-1] - haber
 
-  elif opcion == 'v':
-    print('\n\n[!] Inventario vacio.')
-    reiniciar()
+    elif opcion == 'v':
+        print('\n\n[!] Inventario vacio.')
+        reiniciar()
 
-  elif opcion == 'm' and tabla.empty:
-    print('\n\n[!] Debe hacer algun movimiento primero.')
+    elif opcion == 'm' and tabla.empty:
+        print('\n\n[!] Debe hacer algun movimiento primero.')
 
-  else:
-    print()
-    imprimir_inventario(tabla)
+    else:
+        print()
+        imprimir_inventario(tabla)
 
-  if opcion == 'c' or (opcion == 'v' and not tabla.empty):
-    hora = strftime("%H:%M:%S")
-    tabla.loc[hora, :] = [entrada,
-                          salida,
-                          existencia,
-                          unitario,
-                          medio,
-                          debe,
-                          haber,
-                          saldo]
-    imprimir_inventario(tabla)
+    if opcion == 'c' or (opcion == 'v' and not tabla.empty):
+        hora = strftime("%H:%M:%S")
+        tabla.loc[hora, :] = [entrada,
+                              salida,
+                              existencia,
+                              unitario,
+                              medio,
+                              debe,
+                              haber,
+                              saldo]
+        imprimir_inventario(tabla)
 
 
 def imprimir_inventario(tabla):
-  fecha = strftime("%d/%m/%Y")
-  print('\n' + fecha, end='\n\n')
-  print(tabla, end='\n')
+    fecha = strftime("%d/%m/%Y")
+    print('\n' + fecha, end ='\n\n')
+    print(tabla, end='\n')
 
 
 def main():
-  tabla = generar_tabla()
-  indice = 0
+    tabla = generar_tabla()
+    indice = 0
 
-  while True:
-    try:
-      limpia()
-      datos = pedir_datos(tabla)
-      opcion = datos[0]
-      ingresar_datos(datos, tabla, indice)
+    while True:
+        try:
+            limpia()
+            datos = pedir_datos(tabla)
+            opcion = datos[0]
+            ingresar_datos(datos, tabla, indice)
 
-      if opcion == 'c' or (opcion == 'v' and not tabla.empty):
-        indice += 1
-      pausa()
+            if opcion == 'c' or (opcion == 'v' and not tabla.empty):
+                indice += 1
+            pausa()
 
-    except ValueError:
-      print('\n\n[!] Intente de nuevo.')
-      pausa()
+        except ValueError:
+            print('\n\n[!] Intente de nuevo.')
+            pausa()
 
 
 if __name__ == '__main__':
-  # import pdb; pdb.set_trace()
-  main()
+    # import pdb; pdb.set_trace()
+    main()
