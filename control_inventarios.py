@@ -6,42 +6,34 @@ Programa para administrar inventarios.
 '''
 
 
-from sys import exit, platform
-from pandas import DataFrame
-from subprocess import call, check_output
-from time import strftime
+import pandas as pd
+import subprocess as sp
+import sys
+import time
 
 
 __author__ = 'Ismael Venegas Castelló'
 __email__ = 'ismael.vc1337@gmail.com'
-__contributors__ = ['Jdash99']
+__contributors__ = ['Javier Cardenas - Jdash99']
 __copyright__ = 'Copyright 2014, {0}'.format(__author__)
 __date__ = '01/07/2014'
 __licence__ = 'GPL v2'
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 __status__ = 'Inestable'
 
 
 def limpia():
     ''' Limpia la pantalla.'''
-    plataforma = platform
-
+    plataforma = sys.platform
     if plataforma.startswith('linux'):
-        call('clear')
-
+        sp.call('clear')
     elif plataforma.startswith('win'):
-        call('cls', shell=True)
+        sp.call('cls', shell=True)
 
 
 def pausa():
     '''Permite realizar pausas dentro de un bucle.'''
     input("\n\nPresione enter para continuar. ")
-
-
-def reiniciar():
-    pausa()
-    limpia()
-    main()
 
 
 def generar_tabla():
@@ -53,13 +45,11 @@ def generar_tabla():
                 'DEBE',
                 'HABER',
                 'SALDO']
-
-    tabla = DataFrame(columns=columnas)
+    tabla = pd.DataFrame(columns=columnas)
     return tabla
 
 
 def pedir_datos(tabla, cantidad=0.0, unitario=0.0):
-    opciones_permitidas = ['c', 'v', 'm', 's']
     opcion = input('CONTROL DE INVENTARIO\n\n'
                    'Seleccione una opción:\n'
                    '  c: Compras\n'
@@ -67,70 +57,73 @@ def pedir_datos(tabla, cantidad=0.0, unitario=0.0):
                    '  m: Movimientos\n'
                    '  s: Salir\n\n'
                    '=> ').lower()
+    opciones_permitidas = ['c', 'v', 'm', 's']
 
     if opcion in opciones_permitidas:
         if opcion == 'c':
-            cantidad = float(input('\nCantidad de unidades: '))
+            cantidad = float(input('\n\nCantidad de unidades: '))
             unitario = float(input('Precio unitario: '.rjust(22)))
 
         if opcion == 'v' and not tabla.empty:
-            cantidad = float(input('\nCantidad de unidades: '))
+            cantidad = float(input('\n\nCantidad de unidades: '))
 
         if opcion == 's':
-            exit(0)
+            sys.exit(0)
 
-        print()
         return opcion, cantidad, unitario
 
     else:
         print('\n\n[!] Opción invalida: "{0}"'.format(opcion))
-        reiniciar()
+        dummy = (0, 0, 0)
+        return dummy
 
 
 def ingresar_datos(datos, tabla, indice):
     '''Ingresa una nueva fila de datos a la tabla del inventario.'''
     opcion, cantidad, unitario = datos
 
-    if opcion == 'c' and indice != 0:
-        entrada = cantidad
-        salida = tabla['SALIDA'][indice-1]
-        existencia = tabla['EXISTENCIA'][indice-1] + cantidad
-        medio = 0.0
-        debe = cantidad * unitario
-        haber = tabla['HABER'][indice-1]
-        saldo = tabla['SALDO'][indice-1] + debe
-
-    elif opcion == 'c':
+    if opcion == 'c':
         entrada = cantidad
         salida = 0.0
-        existencia = entrada
         medio = 0.0
         debe = cantidad * unitario
         haber = 0.0
-        saldo = debe
 
-    elif opcion == 'v' and indice != 0:
+        if indice == 0: # Si es la primera compra.
+            existencia = entrada
+            saldo = debe
+        else:
+            existencia = tabla['EXISTENCIA'][indice-1] + cantidad
+            saldo = tabla['SALDO'][indice-1] + debe
+
+    elif opcion == 'v' and not tabla.empty:
         entrada = 0.0
         salida = cantidad
         existencia = tabla['EXISTENCIA'][indice-1] - cantidad
         debe = 0.0
         medio = tabla['DEBE'][indice-1] / tabla['EXISTENCIA'][indice-1]
+
+        if medio == 0.0: # Por que hubo una venta anterior.
+            # Buscar el ultimo valor de "medio", que no sea 0.
+            indice_2 = indice
+            while tabla['MEDIO'][indice_2-1] == 0.0:
+                indice_2 -= 1
+            medio = tabla['MEDIO'][indice_2-1]
+
         haber = cantidad * medio
         saldo = tabla['SALDO'][indice-1] - haber
 
     elif opcion == 'v':
         print('\n\n[!] Inventario vacio.')
-        reiniciar()
 
-    elif opcion == 'm' and tabla.empty:
-        print('\n\n[!] Debe hacer algun movimiento primero.')
-
-    else:
-        print()
-        imprimir_inventario(tabla)
+    elif opcion == 'm':
+        if not tabla.empty:
+            imprimir_inventario(tabla)
+        else:
+            print('\n\n[!] Debe hacer algun movimiento primero.')
 
     if opcion == 'c' or (opcion == 'v' and not tabla.empty):
-        hora = strftime("%H:%M:%S")
+        hora = time.strftime("%H:%M:%S")
         tabla.loc[hora, :] = [entrada,
                               salida,
                               existencia,
@@ -143,8 +136,8 @@ def ingresar_datos(datos, tabla, indice):
 
 
 def imprimir_inventario(tabla):
-    fecha = strftime("%d/%m/%Y")
-    print('\n' + fecha, end ='\n\n')
+    fecha = time.strftime("%d/%m/%Y")
+    print('\n\n' + fecha, end ='\n\n')
     print(tabla, end='\n')
 
 
@@ -169,5 +162,4 @@ def main():
 
 
 if __name__ == '__main__':
-    # import pdb; pdb.set_trace()
     main()
