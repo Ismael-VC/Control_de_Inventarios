@@ -72,11 +72,6 @@ def pedir_datos(tabla, cantidad=0.0, unitario=0.0):
 
         return opcion, cantidad, unitario
 
-    else:
-        print('\n\n[!] Opción invalida: "{0}"'.format(opcion))
-        dummy = (0, 0, 0)
-        return dummy
-
 
 def ingresar_datos(datos, tabla, indice):
     '''Ingresa una nueva fila de datos a la tabla del inventario.'''
@@ -156,7 +151,7 @@ def main():
                 indice += 1
             pausa()
 
-        except ValueError:
+        except (ValueError, TypeError):
             print('\n\n[!] Intente de nuevo.')
             pausa()
 
