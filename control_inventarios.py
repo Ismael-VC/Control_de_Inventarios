@@ -14,7 +14,7 @@ import time
 
 __author__ = 'Ismael Venegas Castelló'
 __email__ = 'ismael.vc1337@gmail.com'
-__contributors__ = ['Jdash99']
+__contributors__ = ['Javier Cardenas - Jdash99']
 __copyright__ = 'Copyright 2014, {0}'.format(__author__)
 __date__ = '01/07/2014'
 __licence__ = 'GPL v2'
@@ -137,7 +137,7 @@ def ingresar_datos(datos, tabla, indice):
 
 def imprimir_inventario(tabla):
     fecha = time.strftime("%d/%m/%Y")
-    print('\n' + fecha, end ='\n\n')
+    print('\n\n' + fecha, end ='\n\n')
     print(tabla, end='\n')
 
 
