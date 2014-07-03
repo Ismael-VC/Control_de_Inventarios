@@ -74,6 +74,7 @@ def pedir_datos(tabla, cantidad=0.0, unitario=0.0):
 
     else:
         print('\n\n[!] Opción invalida: "{0}"'.format(opcion))
+        # Esto es para evitar regresar "None", en caso de ingresar una opcion invalida.
         dummy = (0, 0, 0)
         return dummy
 
