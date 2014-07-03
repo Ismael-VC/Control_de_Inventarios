@@ -14,6 +14,7 @@ from time import strftime
 
 __author__ = 'Ismael Venegas Castelló'
 __email__ = 'ismael.vc1337@gmail.com'
+__contributors__ = ['Jdash99']
 __copyright__ = 'Copyright 2014, {0}'.format(__author__)
 __date__ = '01/07/2014'
 __licence__ = 'GPL v2'
