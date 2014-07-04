@@ -64,10 +64,16 @@ def pedir_datos(tabla, cantidad=0.0, unitario=0.0):
             cantidad = float(input('\n\nCantidad de unidades: '))
             unitario = float(input('Precio unitario: '.rjust(22)))
 
-        if opcion == 'v' and not tabla.empty:
+        elif opcion == 'v' and not tabla.empty:
             cantidad = float(input('\n\nCantidad de unidades: '))
 
-        if opcion == 's':
+        elif opcion == 'm':
+            if not tabla.empty:
+                imprimir_inventario(tabla)
+            else:
+                print('\n\n[!] Debe hacer algun movimiento primero.')
+
+        elif opcion == 's':
             sys.exit(0)
 
         return opcion, cantidad, unitario
@@ -110,12 +116,6 @@ def ingresar_datos(datos, tabla, indice):
 
     elif opcion == 'v':
         print('\n\n[!] Inventario vacio.')
-
-    elif opcion == 'm':
-        if not tabla.empty:
-            imprimir_inventario(tabla)
-        else:
-            print('\n\n[!] Debe hacer algun movimiento primero.')
 
     if opcion == 'c' or (opcion == 'v' and not tabla.empty):
         hora = time.strftime("%H:%M:%S")
