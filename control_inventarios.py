@@ -21,7 +21,7 @@ __contributors__ = ['Javier Cardenas - Jdash99']
 __copyright__ = 'Copyright 2014, {0}'.format(__author__)
 __date__ = '01/07/2014'
 __licence__ = 'GPL v2'
-__version__ = '0.2.0'
+__version__ = '0.3.0'
 __status__ = 'Inestable'
 
 
@@ -155,7 +155,6 @@ def main():
 
             if opcion == 'c' or (opcion == 'v' and not tabla.empty):
                 indice += 1
-
             pausa()
 
         except (decimal.InvalidOperation, TypeError):
