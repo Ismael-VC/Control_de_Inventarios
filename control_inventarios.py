@@ -110,26 +110,34 @@ def ingresar_datos(datos, tabla, indice):
             saldo = tabla['SALDO'][indice-1] + debe
 
     elif opcion == 'v' and not tabla.empty:
-        entrada = Dec(0)
-        salida = cantidad
-        existencia = tabla['EXISTENCIA'][indice-1] - cantidad
-        debe = Dec(0)
-        medio = tabla['DEBE'][indice-1] / tabla['EXISTENCIA'][indice-1]
+        existencia_anterior = tabla['EXISTENCIA'][indice-1]
+        unidades_suficientes = (existencia_anterior - cantidad) >= 0
 
-        if medio == 0: # Por que hubo una venta anterior.
-            # Buscar el ultimo valor de "medio", que no sea 0.
-            indice_2 = indice
-            while tabla['MEDIO'][indice_2-1] == 0:
-                indice_2 -= 1
-            medio = tabla['MEDIO'][indice_2-1]
+        if unidades_suficientes:
+            entrada = Dec(0)
+            salida = cantidad
+            existencia = tabla['EXISTENCIA'][indice-1] - cantidad
+            debe = Dec(0)
+            medio = tabla['DEBE'][indice-1] / tabla['EXISTENCIA'][indice-1]
 
-        haber = cantidad * medio
-        saldo = tabla['SALDO'][indice-1] - haber
+            if medio == 0: # Por que hubo una venta anterior.
+                # Buscar el ultimo valor de "medio", que no sea 0.
+                indice_2 = indice
+                while tabla['MEDIO'][indice_2-1] == 0:
+                    indice_2 -= 1
+                medio = tabla['MEDIO'][indice_2-1]
+
+            haber = cantidad * medio
+            saldo = tabla['SALDO'][indice-1] - haber
+
+        else:
+            print('\n\n[!] Unidades insuficientes.')
 
     elif opcion == 'v':
         print('\n\n[!] Inventario vacio.')
 
-    if opcion == 'c' or (opcion == 'v' and not tabla.empty):
+    if (opcion == 'c' or
+            opcion == 'v' and not tabla.empty and unidades_suficientes):
         hora = time.strftime("%H:%M:%S")
         tabla.loc[hora, :] = [entrada,
                               salida,
@@ -157,7 +165,7 @@ def main():
                 indice += 1
             pausa()
 
-        except (decimal.InvalidOperation, TypeError):
+        except (decimal.InvalidOperation, TypeError, IndexError):
             print('\n\n[!] Intente de nuevo.')
             pausa()
 
