@@ -61,7 +61,7 @@ def imprimir_inventario(tabla):
     print(tabla, end='\n')
 
 
-def pedir_datos(tabla, cantidad=None, unitario=None):
+def pedir_datos(tabla, cantidad=Dec(0), unitario=Dec(0)):
     opcion = input('CONTROL DE INVENTARIO\n\n'
                    'Seleccione una opción:\n'
                    '  c: Compras\n'
